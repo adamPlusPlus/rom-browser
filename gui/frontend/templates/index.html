@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myrient Game Browser</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-gamepad"></i> Myrient Game Browser</h1>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search games..." class="search-input">
+                    <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-list"></i> Platforms</h3>
+                <button id="refreshPlatforms" class="btn btn-sm"><i class="fas fa-sync-alt"></i></button>
+            </div>
+            <div id="platformsList" class="platforms-list">
+                <div class="loading">Loading platforms...</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Game Grid -->
+            <div id="gamesGrid" class="games-grid">
+                <div class="welcome-message">
+                    <i class="fas fa-gamepad fa-3x"></i>
+                    <h2>Welcome to Myrient Game Browser</h2>
+                    <p>Select a platform from the sidebar to start browsing games</p>
+                </div>
+            </div>
+
+            <!-- Game Details Modal -->
+            <div id="gameModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modalGameTitle">Game Title</h2>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="game-info">
+                            <div class="game-cover">
+                                <img id="modalGameCover" src="" alt="Game Cover" class="cover-image">
+                                <div class="game-actions">
+                                    <button id="downloadBtn" class="btn btn-primary">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button id="favoriteBtn" class="btn btn-secondary">
+                                        <i class="fas fa-heart"></i> Favorite
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="game-details">
+                                <div class="rating-section">
+                                    <div class="rating">
+                                        <span class="rating-label">Rating:</span>
+                                        <div class="stars" id="modalGameRating"></div>
+                                        <span class="rating-count" id="modalGameRatingCount"></span>
+                                    </div>
+                                    <div class="metacritic" id="modalGameMetacritic" style="display: none;">
+                                        <span class="metacritic-label">Metacritic:</span>
+                                        <span class="metacritic-score" id="modalGameMetacriticScore"></span>
+                                    </div>
+                                </div>
+                                <div class="game-meta">
+                                    <div class="meta-item">
+                                        <span class="meta-label">Platforms:</span>
+                                        <span class="meta-value" id="modalGamePlatforms"></span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Genres:</span>
+                                        <span class="meta-value" id="modalGameGenres"></span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Release Date:</span>
+                                        <span class="meta-value" id="modalGameReleaseDate"></span>
+                                    </div>
+                                </div>
+                                <div class="game-description">
+                                    <h4>Description</h4>
+                                    <p id="modalGameDescription"></p>
+                                </div>
+                                <div class="game-screenshots" id="modalGameScreenshots" style="display: none;">
+                                    <h4>Screenshots</h4>
+                                    <div class="screenshots-grid" id="modalScreenshotsGrid"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Filters Panel -->
+        <div class="filters-panel" id="filtersPanel">
+            <div class="filters-header">
+                <h3><i class="fas fa-filter"></i> Filters</h3>
+                <button id="toggleFilters" class="btn btn-sm"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="filters-content">
+                <div class="filter-group">
+                    <label>Genre:</label>
+                    <select id="genreFilter" class="filter-select">
+                        <option value="">All Genres</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Platform:</label>
+                    <select id="platformFilter" class="filter-select">
+                        <option value="">All Platforms</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Rating:</label>
+                    <input type="range" id="ratingFilter" min="0" max="100" value="0" class="filter-range">
+                    <span id="ratingValue">0+</span>
+                </div>
+                <div class="filter-actions">
+                    <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                    <button id="clearFilters" class="btn btn-secondary">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
