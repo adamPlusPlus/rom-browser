@@ -1,0 +1,105 @@
+{
+  "appearance": {
+    "theme": "nordic_dark",
+    "colors": {
+      "background": "#2e3440",
+      "foreground": "#ffffff",
+      "secondary_background": "#3b4252",
+      "secondary_foreground": "#e5e9f0",
+      "accent": "#5e81ac",
+      "accent_hover": "#81a1c1",
+      "success": "#a3be8c",
+      "warning": "#ebcb8b",
+      "error": "#bf616a",
+      "border": "#4c566a",
+      "selection": "#5e81ac",
+      "selection_background": "#434c5e"
+    },
+    "fonts": {
+      "default": {
+        "family": "Segoe UI",
+        "size": 9,
+        "weight": "normal"
+      },
+      "heading": {
+        "family": "Segoe UI",
+        "size": 10,
+        "weight": "bold"
+      },
+      "small": {
+        "family": "Segoe UI",
+        "size": 8,
+        "weight": "normal"
+      },
+      "large": {
+        "family": "Segoe UI",
+        "size": 12,
+        "weight": "normal"
+      }
+    },
+    "game_list": {
+      "row_height": 20,
+      "alternating_colors": true,
+      "alternating_color": "#434c5e",
+      "hover_color": "#4c566a",
+      "selected_color": "#5e81ac",
+            "rating_color": "#88c0d0",
+            "custom_rating_color": "#d08770",
+            "custom_tags_color": "#ebcb8b",
+            "custom_both_color": "#bf616a",
+      "favorite_color": "#ebcb8b"
+    },
+    "metadata_panel": {
+      "background": "#3b4252",
+      "border_color": "#4c566a",
+      "text_color": "#ffffff",
+      "link_color": "#5e81ac",
+      "rating_color": "#d08770"
+    },
+    "buttons": {
+      "background": "#4c566a",
+      "foreground": "#ffffff",
+      "hover_background": "#5e81ac",
+      "active_background": "#81a1c1",
+      "border_color": "#4c566a"
+    },
+    "input_fields": {
+      "background": "#3b4252",
+      "foreground": "#ffffff",
+      "border_color": "#4c566a",
+      "focus_border_color": "#5e81ac",
+      "placeholder_color": "#88c0d0"
+    },
+    "scrollbars": {
+      "background": "#3b4252",
+      "thumb_color": "#4c566a",
+      "thumb_hover_color": "#5e81ac",
+      "arrow_color": "#ffffff"
+    }
+  },
+  "behavior": {
+    "auto_refresh_ratings": true,
+    "confirm_rating_changes": false,
+    "rating_precision": 1,
+    "default_rating": 7.0,
+    "rating_range": {
+      "min": 0.0,
+      "max": 10.0
+    }
+  },
+  "window": {
+    "title": "Enhanced Game Launcher",
+    "min_width": 1000,
+    "min_height": 600,
+    "default_width": 1200,
+    "default_height": 800,
+    "resizable": true,
+    "center_on_startup": true
+  },
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "max_lines": 1000,
+    "auto_scroll": true
+  }
+}

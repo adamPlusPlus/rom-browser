@@ -110,10 +110,117 @@ chmod +x scripts/*.sh
 
 ## 📚 Documentation
 
-- [CLI Usage Guide](docs/CLI.md)
-- [Web GUI Guide](docs/GUI.md)
-- [Configuration Reference](docs/CONFIG.md)
-- [Contributing Guide](docs/CONTRIBUTING.md)
+- This section consolidates documentation from the GUI and Game Shortcuts projects.
+
+### Web GUI (from gui/README.md)
+
+#### Features
+- Game browsing with cover art; platform-based organization; real-time search and filtering; responsive UI
+- Rich metadata: IGDB covers, Metacritic, descriptions, screenshots, release dates, genres, platforms
+- Modern UI: animations, dark/light theme, mobile-friendly
+
+#### Quick Start
+```bash
+# Setup
+chmod +x gui/setup.sh
+./gui/setup.sh
+
+# Start backend
+cd gui/backend
+python app.py
+
+# Open
+# http://localhost:5000
+```
+
+#### API Endpoints
+- GET /api/platforms
+- GET /api/browse/<platform_id>
+- GET /api/game/<game_name>
+- POST /api/download/<game_name>
+
+#### Configuration
+- Backend: edit `gui/backend/app.py`
+- Frontend: edit `gui/frontend/static/js/app.js`
+
+### Game Shortcuts Suite (from external/GameShortcuts/README.md)
+
+#### Components
+- Scripts: `create_game_shortcuts.py`, `create_shortcuts_config.py`, `create_shortcuts_single.py`, `create_rom_shortcuts.py`, `game_launcher.py`, `modern_game_launcher.py`
+- Configs: `game_directories.conf`, `rom_directories.conf`
+
+#### Quick Start
+```bash
+pip install -r external/GameShortcuts/requirements.txt
+
+# Configure directories
+# edit: external/GameShortcuts/game_directories.conf
+
+# Create shortcuts
+python scripts/shortcuts/create_shortcuts_config.py
+
+# Optional ROM shortcuts
+python scripts/shortcuts/create_rom_shortcuts.py
+
+# Launch local game launcher
+python external/GameShortcuts/modern_game_launcher.py
+```
+
+#### Features
+- Game Shortcut Creator: scans directories, filters non-games, handles DOSBox, creates named shortcuts
+- ROM Shortcut Creator: maps ROM dirs to emulators, supports major emulators and formats
+- Game Launcher GUI: dark UI, search/filter, favorites, types, double-click launch, stats/last played
+
+### Enhanced Game Collection (from external/GameShortcuts/ENHANCED_README.md)
+
+#### New Components
+- `enhanced_game_launcher.py` — metadata viewer launcher
+- `metadata_downloader.py` — IGDB metadata + cover art
+- `igdb_config.json` — IGDB credentials
+
+#### Highlights
+- Split-panel launcher; cover art; detailed metadata; rating column; one-click metadata download
+- IGDB integration with local SQLite cache and cover storage; smart search and rate limiting
+
+#### Setup
+```bash
+pip install -r external/GameShortcuts/requirements.txt
+# Configure IGDB in external/GameShortcuts/igdb_config.json
+python external/GameShortcuts/enhanced_game_launcher.py
+```
+
+#### File Structure (excerpt)
+```
+external/GameShortcuts/
+├── enhanced_game_launcher.py
+├── metadata_downloader.py
+├── igdb_config.json
+├── games.db
+├── covers/
+└── metadata/
+```
+
+### ROM Shortcuts (summary)
+
+Use the ROM shortcuts creator to generate launcher shortcuts for console ROMs via your preferred emulators.
+
+Quick start
+```bash
+# Configure ROM directories and emulator paths (create if missing)
+# Expected format (one per line):
+#   <ROM_DIRECTORY> = <EMULATOR_EXE_PATH>
+# Example:
+#   D:\ROMs\PS2 = F:\Program Files\PCSX2\pcsx2.exe
+#   D:\ROMs\N64 = F:\Program Files\Project64\Project64.exe
+
+python scripts/shortcuts/create_rom_shortcuts.py --dry-run  # preview
+python scripts/shortcuts/create_rom_shortcuts.py            # create
+```
+
+Notes
+- Place ROM directory/emulator mappings in a `rom_directories.conf` file alongside the script or in the working directory.
+- Generated shortcuts follow the same naming and filtering rules as game shortcuts.
+- Supports common ROM formats; emulator command-lines can be adjusted in the script if needed.
 
 ## 🎯 Use Cases
 
