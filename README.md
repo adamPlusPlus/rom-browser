@@ -60,8 +60,7 @@ cd gui
 rom-browser/
 ├── scripts/              # CLI tools
 │   ├── rom-browse.sh     # Main browser script
-│   ├── rom-download.sh   # Batch downloader
-│   └── download-ps2.sh   # PS2-specific downloader
+│   └── rom-download.sh   # Batch downloader
 ├── gui/                  # Web interface
 │   ├── backend/          # Flask backend
 │   └── frontend/         # Web frontend
