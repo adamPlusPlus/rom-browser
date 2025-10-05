@@ -2,14 +2,19 @@
 """
 Game Name Resolver
 Maps abbreviated game names to full names using common game databases.
+Enhanced with directory scanning and external list support.
 """
 
 import json
+import os
+import sqlite3
 from pathlib import Path
 
 class GameNameResolver:
-    def __init__(self):
+    def __init__(self, db_path="games.db"):
         self.game_mappings = self.load_game_mappings()
+        self.db_path = Path(db_path)
+        self.external_mappings = {}
         
     def load_game_mappings(self):
         """Load comprehensive game name mappings."""
@@ -253,16 +258,154 @@ class GameNameResolver:
             'original_name': name,
             'genre_hints': genre_hints
         }
+    
+    def load_external_mappings(self, mapping_file):
+        """Load additional mappings from external JSON file."""
+        try:
+            with open(mapping_file, 'r', encoding='utf-8') as f:
+                external_data = json.load(f)
+                self.external_mappings.update(external_data)
+                return True
+        except Exception as e:
+            print(f"Error loading external mappings: {e}")
+            return False
+    
+    def scan_game_directories(self, directories):
+        """Scan game directories and build name mappings from directory names."""
+        directory_mappings = {}
+        
+        for directory in directories:
+            dir_path = Path(directory)
+            if not dir_path.exists():
+                continue
+                
+            # Scan for game executables and directories
+            for item in dir_path.iterdir():
+                if item.is_dir():
+                    # Directory name might be a game name
+                    clean_name = self.clean_directory_name(item.name)
+                    if clean_name:
+                        directory_mappings[clean_name] = item.name
+                        
+                elif item.is_file() and item.suffix.lower() in ['.exe', '.lnk']:
+                    # Executable name might be a game name
+                    clean_name = self.clean_executable_name(item.stem)
+                    if clean_name:
+                        directory_mappings[clean_name] = item.stem
+        
+        self.external_mappings.update(directory_mappings)
+        return directory_mappings
+    
+    def clean_directory_name(self, name):
+        """Clean directory name for mapping."""
+        # Remove common non-game suffixes
+        suffixes_to_remove = [
+            ' (ModEngine)', ' (Protected)', ' (MCC Launcher)', ' (Startup)', ' (Pre-Launcher)',
+            ' (Mod - Armoredcore6)', ' (Mod - Darksouls3)', ' (Mod - Eldenring)',
+            ' (PS2)', ' (PSX)', ' (N64)', ' (GameCube)', ' (Wii)', ' (Dreamcast)',
+            ' (Genesis)', ' (SNES)', ' (NES)', ' (GBA)', ' (NDS)', ' (PSP)',
+            ' (MAME)', ' (C64)', ' (Amiga)', ' (Atari2600)'
+        ]
+        
+        clean_name = name
+        for suffix in suffixes_to_remove:
+            clean_name = clean_name.replace(suffix, '')
+        
+        return clean_name.strip() if clean_name != name else None
+    
+    def clean_executable_name(self, name):
+        """Clean executable name for mapping."""
+        # Remove common executable suffixes
+        suffixes_to_remove = [
+            '_x64', '_x86', '_win64', '_win32', '_steam', '_gog', '_epic',
+            '_shipping', '_final', '_release', '_debug', '_test'
+        ]
+        
+        clean_name = name
+        for suffix in suffixes_to_remove:
+            if clean_name.endswith(suffix):
+                clean_name = clean_name[:-len(suffix)]
+        
+        return clean_name.strip() if clean_name != name else None
+    
+    def get_games_from_database(self):
+        """Get game names from the metadata database."""
+        if not self.db_path.exists():
+            return []
+        
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM games")
+            games = [row[0] for row in cursor.fetchall()]
+            conn.close()
+            return games
+        except Exception as e:
+            print(f"Error reading from database: {e}")
+            return []
+    
+    def resolve_game_name_enhanced(self, name):
+        """Enhanced resolution that checks multiple sources."""
+        # First try hardcoded mappings
+        resolved = self.resolve_game_name(name)
+        if resolved != name:
+            return resolved
+        
+        # Then try external mappings (from directories/files)
+        if name in self.external_mappings:
+            return self.external_mappings[name]
+        
+        # Try case-insensitive external matching
+        name_lower = name.lower()
+        for key, value in self.external_mappings.items():
+            if key.lower() == name_lower:
+                return value
+        
+        # Return original name if no match found
+        return name
 
 
 def main():
     resolver = GameNameResolver()
     
+    # Test basic resolution
     test_names = ['SkyrimSE', 'bf4', 'MCC-Win64-Shipping', 'eldenring', 'PlayRDR2']
-    print('Game Name Resolution Test:')
+    print('Basic Game Name Resolution Test:')
     for name in test_names:
         info = resolver.get_game_info(name)
         print(f'{name} -> {info["resolved_name"]} (Genres: {", ".join(info["genre_hints"])})')
+    
+    print('\n' + '='*50)
+    
+    # Test directory scanning
+    game_dirs = [
+        r"E:\Desktop\Games",
+        r"E:\Desktop\ROMs"
+    ]
+    
+    print('Directory Scanning Test:')
+    directory_mappings = resolver.scan_game_directories(game_dirs)
+    print(f'Found {len(directory_mappings)} directory mappings')
+    for clean_name, original_name in list(directory_mappings.items())[:5]:  # Show first 5
+        print(f'  {clean_name} -> {original_name}')
+    
+    print('\n' + '='*50)
+    
+    # Test enhanced resolution
+    print('Enhanced Resolution Test:')
+    test_names_enhanced = ['SkyrimSE', 'SomeGameFromDirectory', 'UnknownGame']
+    for name in test_names_enhanced:
+        resolved = resolver.resolve_game_name_enhanced(name)
+        print(f'{name} -> {resolved}')
+    
+    print('\n' + '='*50)
+    
+    # Test database integration
+    print('Database Integration Test:')
+    db_games = resolver.get_games_from_database()
+    print(f'Found {len(db_games)} games in database')
+    if db_games:
+        print(f'Sample games: {", ".join(db_games[:3])}')
 
 
 if __name__ == "__main__":
