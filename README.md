@@ -145,7 +145,7 @@ python app.py
 ### Game Shortcuts Suite (from external/GameShortcuts/README.md)
 
 #### Components
-- Scripts: `create_game_shortcuts.py`, `create_shortcuts_config.py`, `create_rom_shortcuts.py`, `game_launcher.py`, `modern_game_launcher.py`
+- Scripts: `create_shortcuts_config.py`, `create_rom_shortcuts.py`, `game_launcher.py`, `modern_game_launcher.py`
 - Configs: `game_directories.conf`, `rom_directories.conf`
 
 #### Quick Start
