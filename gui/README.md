@@ -1,182 +1,132 @@
-# Myrient Game Browser GUI
+# ROM Browser GUI
 
-A modern web-based frontend for the Myrient CLI browser with rich game metadata, cover art, and enhanced search capabilities.
+A modern, native desktop application built with Tauri, React, and TypeScript for browsing and managing ROM collections.
 
 ## Features
 
-### 🎮 **Game Browsing**
-- Visual game grid with cover art
-- Platform-based organization
-- Real-time search and filtering
-- Responsive design for all devices
+- **Native Performance**: Built with Tauri for fast, native desktop performance
+- **Modern UI**: Clean, responsive interface with smooth animations
+- **3D Ready**: Integrated with Three.js for future 3D visualizations
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Python Integration**: Seamlessly integrates with existing Python scripts
 
-### 📊 **Rich Metadata**
-- **Cover Art**: High-quality game covers from IGDB
-- **Metacritic Scores**: Professional game ratings
-- **Game Descriptions**: Detailed game information
-- **Screenshots**: In-game screenshots
-- **Release Dates**: When games were released
-- **Genres & Platforms**: Categorized game information
+## Technology Stack
 
-### 🔍 **Enhanced Search**
-- Real-time search across all games
-- Visual filters (genre, platform, rating)
-- Smart game title cleaning
-- Fuzzy matching for better results
+- **Frontend**: React 18 + TypeScript
+- **Backend**: Rust (Tauri)
+- **3D Graphics**: Three.js + React Three Fiber
+- **UI Components**: Lucide React icons
+- **Build Tool**: Vite
 
-### 🎨 **Modern UI**
-- Clean, responsive design
-- Smooth animations and transitions
-- Dark/light theme support
-- Mobile-friendly interface
+## Development Setup
 
-## Quick Start
+### Prerequisites
 
-### 1. Setup
+- **Node.js 18+**: https://nodejs.org/en/download/
+- **Rust**: https://rustup.rs/
+- **Git**: For version control
+
+### Installation
+
+1. **Install Dependencies**:
+   ```bash
+   cd gui
+   npm install
+   ```
+
+2. **Install Tauri CLI**:
+   ```bash
+   cargo install tauri-cli
+   ```
+
+3. **Start Development Server**:
+   ```bash
+   npm run tauri:dev
+   ```
+
+### Building for Production
+
 ```bash
-# Make setup script executable
-chmod +x setup.sh
-
-# Run setup
-./setup.sh
+npm run tauri:build
 ```
 
-### 2. Get API Keys (Optional but Recommended)
-For full functionality, get free API keys:
+## Project Structure
 
-- **IGDB API**: https://api.igdb.com/
-  - Free tier: 500 requests/day
-  - Best for console game metadata
-  
-- **RAWG API**: https://rawg.io/apidocs
-  - Free tier: 20,000 requests/month
-  - Good for PC games and additional metadata
-
-### 3. Set Environment Variables
-```bash
-export IGDB_API_KEY="your_igdb_key_here"
-export RAWG_API_KEY="your_rawg_key_here"
+```
+gui/
+├── src/
+│   ├── components/          # React components
+│   │   ├── Header.tsx
+│   │   ├── PlatformSidebar.tsx
+│   │   └── GameBrowser.tsx
+│   ├── App.tsx             # Main app component
+│   ├── App.css            # App styles
+│   ├── main.tsx           # App entry point
+│   └── index.css          # Global styles
+├── src-tauri/
+│   ├── src/
+│   │   └── main.rs        # Rust backend
+│   ├── Cargo.toml         # Rust dependencies
+│   └── tauri.conf.json    # Tauri configuration
+├── package.json           # Node.js dependencies
+├── vite.config.ts         # Vite configuration
+└── tsconfig.json          # TypeScript configuration
 ```
 
-### 4. Start the Application
-```bash
-cd backend
-python app.py
-```
+## Tauri Commands
 
-### 5. Open in Browser
-Navigate to: http://localhost:5000
+The Rust backend provides these commands to the frontend:
 
-## How It Works
+- `get_platforms()`: Get list of available platforms
+- `browse_platform(platform_id)`: Browse games for a platform
+- `download_game(game_name, url)`: Download a specific game
+- `get_game_metadata(game_name)`: Get metadata for a game
 
-### Backend (Python Flask)
-- **CLI Integration**: Interfaces with your existing `mbrowse.sh` script
-- **Metadata APIs**: Fetches game data from IGDB and RAWG
-- **REST API**: Provides endpoints for the frontend
-- **Caching**: Stores metadata locally to reduce API calls
+## Integration with Python Scripts
 
-### Frontend (HTML/CSS/JavaScript)
-- **Modern UI**: Clean, responsive interface
-- **Real-time Updates**: Live search and filtering
-- **Game Cards**: Visual representation of games
-- **Modal Details**: Rich game information popup
+The GUI integrates with your existing Python scripts:
 
-### Data Flow
-1. User selects a platform from the sidebar
-2. Backend calls `mbrowse.sh` to get game list
-3. Frontend displays games in a visual grid
-4. Asynchronously fetches metadata for each game
-5. Updates game cards with cover art, ratings, etc.
+- **ROM Browsing**: `scripts/rom-sourcing/rom_browser.py`
+- **ROM Downloading**: `scripts/rom-sourcing/rom_downloader.py`
+- **Metadata**: `scripts/game-management/smart_metadata_downloader.py`
+- **Game Management**: `scripts/game-management/game_name_resolver.py`
 
-## API Endpoints
+## Future Enhancements
 
-- `GET /api/platforms` - Get available platforms
-- `GET /api/browse/<platform_id>` - Browse platform games
-- `GET /api/game/<game_name>` - Get game metadata
-- `POST /api/download/<game_name>` - Download game
+- **3D Game Visualization**: Interactive 3D game collections
+- **Advanced Filtering**: Genre, rating, release date filters
+- **Batch Operations**: Multi-game downloads and management
+- **Favorites System**: Save and organize favorite games
+- **Cover Art Integration**: High-quality game covers
+- **Progress Tracking**: Download progress and queue management
 
-## Configuration
+## Development Notes
 
-### Backend Configuration
-Edit `backend/app.py`:
-```python
-CLI_SCRIPT_PATH = "../myrient_batch_downloader/mbrowse.sh"
-TEMP_DIR = "../myrient_batch_downloader/temp"
-DATA_DIR = "../data"
-```
-
-### Frontend Configuration
-Edit `frontend/static/js/app.js`:
-```javascript
-// Modify API endpoints, styling, or behavior
-```
-
-## Database Integration
-
-The GUI integrates with several open databases:
-
-### IGDB (Internet Game Database)
-- **Cover Art**: High-resolution game covers
-- **Screenshots**: In-game screenshots
-- **Ratings**: User and critic ratings
-- **Metadata**: Descriptions, genres, platforms
-
-### RAWG (RAWG Video Games Database)
-- **Metacritic Scores**: Professional critic scores
-- **Additional Metadata**: Release dates, websites
-- **Community Data**: User ratings and reviews
-
-## Customization
-
-### Adding New Metadata Sources
-1. Add new API integration in `backend/app.py`
-2. Update `GameMetadataService` class
-3. Modify frontend to display new data
-
-### Styling Changes
-- Edit `frontend/static/css/style.css`
-- Modify color scheme, layout, or animations
-- Add new UI components
-
-### CLI Integration
-- Modify `CLI_SCRIPT_PATH` in backend
-- Update command parsing logic
-- Add new CLI features
+- **Hot Reload**: Changes to frontend code automatically refresh
+- **DevTools**: Full browser devtools available in development mode
+- **TypeScript**: Full type safety for better development experience
+- **Responsive**: Works on different screen sizes and orientations
 
 ## Troubleshooting
 
 ### Common Issues
 
-**1. CLI Script Not Found**
-```
-Error: Failed to get platforms
-```
-- Ensure `mbrowse.sh` is executable
-- Check `CLI_SCRIPT_PATH` in `app.py`
-- Verify script permissions
-
-**2. API Rate Limits**
-```
-Error: API rate limit exceeded
-```
-- Check your API key limits
-- Implement caching (already included)
-- Consider upgrading API plans
-
-**3. No Game Metadata**
-- Verify API keys are set correctly
-- Check internet connection
-- Some games may not be in databases
-
-**4. Games Not Loading**
-- Check browser console for errors
-- Verify backend is running
-- Check CLI script output
+1. **Node.js not found**: Install Node.js from https://nodejs.org/
+2. **Rust not found**: Install Rust from https://rustup.rs/
+3. **Build errors**: Run `cargo clean` and try again
+4. **Permission errors**: Ensure scripts are executable
 
 ### Debug Mode
-Enable debug mode in `backend/app.py`:
-```python
-app.run(debug=True, host='0.0.0.0', port=5000)
+
+Enable debug mode in `src-tauri/tauri.conf.json`:
+```json
+{
+  "tauri": {
+    "allowlist": {
+      "all": true
+    }
+  }
+}
 ```
 
 ## Contributing
@@ -190,11 +140,3 @@ app.run(debug=True, host='0.0.0.0', port=5000)
 ## License
 
 This project is open source. Feel free to modify and distribute.
-
-## Credits
-
-- **IGDB**: Game metadata and cover art
-- **RAWG**: Additional game information
-- **Font Awesome**: Icons
-- **Flask**: Backend framework
-- **Your CLI Script**: Core browsing functionality

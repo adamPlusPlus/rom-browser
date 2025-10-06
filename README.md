@@ -70,14 +70,17 @@ python scripts/game-management/create_rom_shortcuts.py
 python scripts/game-management/smart_metadata_downloader.py
 ```
 
-### **Web GUI**
+### **Native GUI (Tauri + React)**
 ```bash
-# Start the web interface
+# Install dependencies
 cd gui
-./start_gui.sh
+npm install
 
-# Open in browser
-# Navigate to: http://localhost:5000
+# Start development server
+npm run tauri:dev
+
+# Build for production
+npm run tauri:build
 ```
 
 ## 📁 Project Structure
@@ -102,9 +105,15 @@ rom-browser/
 │   │   ├── config_manager.py             # App configuration
 │   │   └── games.db                      # Metadata database
 │   └── shortcuts/        # Legacy shortcut scripts
-├── gui/                  # Web interface
-│   ├── backend/          # Flask backend
-│   └── frontend/         # Web frontend
+├── gui/                  # Native desktop application
+│   ├── src/              # React frontend
+│   │   ├── components/   # UI components
+│   │   ├── App.tsx       # Main app
+│   │   └── main.tsx      # Entry point
+│   ├── src-tauri/        # Rust backend
+│   │   ├── src/main.rs   # Tauri commands
+│   │   └── Cargo.toml    # Rust dependencies
+│   └── package.json      # Node.js dependencies
 ├── config/               # Configuration files
 │   └── rom-filter.txt    # Game filtering rules
 └── docs/                 # Documentation
@@ -134,15 +143,20 @@ rom-browser/
 
 ### **Requirements**
 - Python 3.8+
+- Node.js 18+ (for GUI)
+- Rust (for GUI)
 - Bash shell (MinGW/Git Bash on Windows)
 - curl command
 - 7-Zip (for extraction)
 
 ### **Setup**
 ```bash
-# Install Python dependencies
+# Install GUI dependencies
 cd gui
-pip install -r backend/requirements.txt
+npm install
+
+# Install Tauri CLI
+cargo install tauri-cli
 
 # Make scripts executable
 chmod +x scripts/*.sh
