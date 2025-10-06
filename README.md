@@ -33,6 +33,8 @@ A modern web-based ROM browser with metadata, cover art, and batch downloading f
 ## 🚀 Quick Start
 
 ### **CLI Usage**
+
+**Bash Scripts (Shell Integration):**
 ```bash
 # Browse ROMs
 ./scripts/rom-sourcing/rom-browse.sh
@@ -42,6 +44,21 @@ A modern web-based ROM browser with metadata, cover art, and batch downloading f
 
 # Download specific platform
 ./scripts/rom-sourcing/rom-download.sh PS2
+
+# Generic file browser
+./scripts/rom-sourcing/rom-files.sh
+```
+
+**Python Scripts (Enhanced Features):**
+```bash
+# Browse ROMs with advanced features
+python scripts/rom-sourcing/rom_browser.py --dataset redump
+
+# Download ROMs with progress tracking
+python scripts/rom-sourcing/rom_downloader.py --platform "PlayStation 2" --max-files 10
+
+# Generic file browser with filtering
+python scripts/rom-sourcing/rom_files.py --url "https://myrient.erista.me/files/Redump/"
 
 # Create game shortcuts
 python scripts/game-management/create_shortcuts_config.py
@@ -69,9 +86,12 @@ cd gui
 rom-browser/
 ├── scripts/              # CLI tools
 │   ├── rom-sourcing/     # ROM browsing and downloading
-│   │   ├── rom-browse.sh     # Main browser script
-│   │   ├── rom-download.sh   # Batch downloader
-│   │   └── rom-files.sh      # Generic file browser
+│   │   ├── rom-browse.sh     # Main browser script (bash)
+│   │   ├── rom-download.sh   # Batch downloader (bash)
+│   │   ├── rom-files.sh      # Generic file browser (bash)
+│   │   ├── rom_browser.py    # Main browser script (python)
+│   │   ├── rom_downloader.py # Batch downloader (python)
+│   │   └── rom_files.py      # Generic file browser (python)
 │   ├── game-management/  # Game collection management
 │   │   ├── create_shortcuts_config.py    # Config-based shortcut creator
 │   │   ├── create_rom_shortcuts.py       # ROM-to-emulator shortcuts
