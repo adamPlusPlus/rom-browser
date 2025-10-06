@@ -35,13 +35,22 @@ A modern web-based ROM browser with metadata, cover art, and batch downloading f
 ### **CLI Usage**
 ```bash
 # Browse ROMs
-./scripts/rom-browse.sh
+./scripts/rom-sourcing/rom-browse.sh
 
 # Download ROMs
-./scripts/rom-download.sh
+./scripts/rom-sourcing/rom-download.sh
 
 # Download specific platform
-./scripts/rom-download.sh PS2
+./scripts/rom-sourcing/rom-download.sh PS2
+
+# Create game shortcuts
+python scripts/game-management/create_shortcuts_config.py
+
+# Create ROM shortcuts
+python scripts/game-management/create_rom_shortcuts.py
+
+# Download metadata
+python scripts/game-management/smart_metadata_downloader.py
 ```
 
 ### **Web GUI**
@@ -59,8 +68,20 @@ cd gui
 ```
 rom-browser/
 ├── scripts/              # CLI tools
-│   ├── rom-browse.sh     # Main browser script
-│   └── rom-download.sh   # Batch downloader
+│   ├── rom-sourcing/     # ROM browsing and downloading
+│   │   ├── rom-browse.sh     # Main browser script
+│   │   ├── rom-download.sh   # Batch downloader
+│   │   └── rom-files.sh      # Generic file browser
+│   ├── game-management/  # Game collection management
+│   │   ├── create_shortcuts_config.py    # Config-based shortcut creator
+│   │   ├── create_rom_shortcuts.py       # ROM-to-emulator shortcuts
+│   │   ├── game_name_resolver.py         # Enhanced name mapping
+│   │   ├── metadata_downloader.py        # IGDB/Screenscraper integration
+│   │   ├── smart_metadata_downloader.py  # Batch metadata processing
+│   │   ├── custom_ratings_manager.py     # User ratings management
+│   │   ├── config_manager.py             # App configuration
+│   │   └── games.db                      # Metadata database
+│   └── shortcuts/        # Legacy shortcut scripts
 ├── gui/                  # Web interface
 │   ├── backend/          # Flask backend
 │   └── frontend/         # Web frontend
@@ -142,62 +163,35 @@ python app.py
 - Backend: edit `gui/backend/app.py`
 - Frontend: edit `gui/frontend/static/js/app.js`
 
-### Game Shortcuts Suite (from external/GameShortcuts/README.md)
+### Game Management Suite (from scripts/game-management/)
 
 #### Components
-- Scripts: `create_shortcuts_config.py`, `create_rom_shortcuts.py`, `game_launcher.py`, `modern_game_launcher.py`
-- Configs: `game_directories.conf`, `rom_directories.conf`
+- Scripts: `create_shortcuts_config.py`, `create_rom_shortcuts.py`, `game_name_resolver.py`, `metadata_downloader.py`, `smart_metadata_downloader.py`, `custom_ratings_manager.py`, `config_manager.py`
+- Database: `games.db` - SQLite metadata storage
 
 #### Quick Start
 ```bash
-pip install -r external/GameShortcuts/requirements.txt
+# Create game shortcuts
+python scripts/game-management/create_shortcuts_config.py
 
-# Configure directories
-# edit: external/GameShortcuts/game_directories.conf
+# Create ROM shortcuts  
+python scripts/game-management/create_rom_shortcuts.py
 
-# Create shortcuts
-python scripts/shortcuts/create_shortcuts_config.py
+# Download metadata for all games
+python scripts/game-management/smart_metadata_downloader.py
 
-# Optional ROM shortcuts
-python scripts/shortcuts/create_rom_shortcuts.py
-
-# Launch local game launcher
-python external/GameShortcuts/modern_game_launcher.py
+# Enhanced name resolution with directory scanning
+python scripts/game-management/game_name_resolver.py
 ```
 
 #### Features
-- Game Shortcut Creator: scans directories, filters non-games, handles DOSBox, creates named shortcuts
-- ROM Shortcut Creator: maps ROM dirs to emulators, supports major emulators and formats
-- Game Launcher GUI: dark UI, search/filter, favorites, types, double-click launch, stats/last played
-
-### Enhanced Game Collection (from external/GameShortcuts/ENHANCED_README.md)
-
-#### New Components
-- `enhanced_game_launcher.py` — metadata viewer launcher
-- `metadata_downloader.py` — IGDB metadata + cover art
-- `igdb_config.json` — IGDB credentials
-
-#### Highlights
-- Split-panel launcher; cover art; detailed metadata; rating column; one-click metadata download
-- IGDB integration with local SQLite cache and cover storage; smart search and rate limiting
-
-#### Setup
-```bash
-pip install -r external/GameShortcuts/requirements.txt
-# Configure IGDB in external/GameShortcuts/igdb_config.json
-python external/GameShortcuts/enhanced_game_launcher.py
-```
-
-#### File Structure (excerpt)
-```
-external/GameShortcuts/
-├── enhanced_game_launcher.py
-├── metadata_downloader.py
-├── igdb_config.json
-├── games.db
-├── covers/
-└── metadata/
-```
+- **Game Shortcut Creator**: scans directories, filters non-games, handles DOSBox, creates named shortcuts
+- **ROM Shortcut Creator**: maps ROM dirs to emulators, supports major emulators and formats
+- **Enhanced Name Resolver**: directory scanning, external mappings, database integration
+- **Metadata Downloader**: IGDB/Screenscraper integration with cover art and ratings
+- **Smart Batch Processing**: API rate limiting, incomplete metadata tracking
+- **Custom Ratings Manager**: user-defined ratings and tags
+- **Configuration Manager**: app settings and themes
 
 ### ROM Shortcuts (summary)
 
@@ -212,8 +206,8 @@ Quick start
 #   D:\ROMs\PS2 = F:\Program Files\PCSX2\pcsx2.exe
 #   D:\ROMs\N64 = F:\Program Files\Project64\Project64.exe
 
-python scripts/shortcuts/create_rom_shortcuts.py --dry-run  # preview
-python scripts/shortcuts/create_rom_shortcuts.py            # create
+python scripts/game-management/create_rom_shortcuts.py --dry-run  # preview
+python scripts/game-management/create_rom_shortcuts.py            # create
 ```
 
 Notes
