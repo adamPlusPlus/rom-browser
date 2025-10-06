@@ -7,10 +7,13 @@ interface Game {
   platform: string
   size?: string
   url?: string
-  coverArt?: string
+  cover_art?: string
   rating?: number
-  isFavorite?: boolean
-  isDownloaded?: boolean
+  summary?: string
+  genres?: string
+  release_date?: string
+  is_favorite?: boolean
+  is_downloaded?: boolean
 }
 
 interface MyLibraryProps {
@@ -32,38 +35,8 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
   const loadLibraryGames = async () => {
     try {
       setLoading(true)
-      // This will integrate with your local game database
-      // For now, return mock data
-      const mockGames: Game[] = [
-        {
-          name: "Grand Theft Auto: San Andreas",
-          platform: "PlayStation 2",
-          size: "4.2 GB",
-          coverArt: "https://example.com/cover1.jpg",
-          rating: 9.5,
-          isFavorite: true,
-          isDownloaded: true
-        },
-        {
-          name: "Halo: Combat Evolved",
-          platform: "Xbox",
-          size: "1.8 GB",
-          coverArt: "https://example.com/cover2.jpg",
-          rating: 9.0,
-          isFavorite: false,
-          isDownloaded: true
-        },
-        {
-          name: "Super Mario Sunshine",
-          platform: "GameCube",
-          size: "1.4 GB",
-          coverArt: "https://example.com/cover3.jpg",
-          rating: 8.8,
-          isFavorite: true,
-          isDownloaded: false
-        }
-      ]
-      setGames(mockGames)
+      const result = await invoke<Game[]>('get_library_games')
+      setGames(result)
     } catch (error) {
       console.error('Failed to load library games:', error)
     } finally {
@@ -74,7 +47,7 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
   const filteredGames = games.filter(game => {
     const matchesSearch = game.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesPlatform = filterPlatform === 'all' || game.platform === filterPlatform
-    const matchesFavorites = !showFavoritesOnly || game.isFavorite
+    const matchesFavorites = !showFavoritesOnly || game.is_favorite
     
     return matchesSearch && matchesPlatform && matchesFavorites
   })
@@ -89,6 +62,9 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
     console.log('Download game:', game.name)
   }
 
+  // Get unique platforms for filter
+  const platforms = Array.from(new Set(games.map(game => game.platform)))
+
   return (
     <div className="page-content">
       <div className="page-header">
@@ -96,7 +72,7 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
           <i className="fas fa-book"></i>
           My Library
         </h2>
-        <p>Manage your downloaded games and favorites</p>
+        <p>Manage your downloaded games and favorites ({games.length} games)</p>
       </div>
 
       <div className="library-controls">
@@ -122,9 +98,9 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
               className="filter-select"
             >
               <option value="all">All Platforms</option>
-              <option value="PlayStation 2">PlayStation 2</option>
-              <option value="Xbox">Xbox</option>
-              <option value="GameCube">GameCube</option>
+              {platforms.map(platform => (
+                <option key={platform} value={platform}>{platform}</option>
+              ))}
             </select>
           </div>
 
@@ -168,9 +144,9 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
         <div className={`games-container ${viewMode}`}>
           {filteredGames.map((game, index) => (
             <div key={index} className={`game-card ${viewMode}`}>
-              {game.coverArt && (
+              {game.cover_art && (
                 <div className="game-cover">
-                  <img src={game.coverArt} alt={game.name} />
+                  <img src={game.cover_art} alt={game.name} />
                 </div>
               )}
               
@@ -182,20 +158,28 @@ export const MyLibrary: React.FC<MyLibraryProps> = () => {
                 {game.rating && (
                   <div className="game-rating">
                     <Star size={14} />
-                    <span>{game.rating}/10</span>
+                    <span>{game.rating.toFixed(1)}/10</span>
                   </div>
+                )}
+
+                {game.summary && (
+                  <p className="game-summary">{game.summary.substring(0, 100)}...</p>
+                )}
+
+                {game.genres && (
+                  <p className="game-genres">{game.genres}</p>
                 )}
               </div>
 
               <div className="game-actions">
                 <button
-                  className={`action-btn favorite ${game.isFavorite ? 'active' : ''}`}
+                  className={`action-btn favorite ${game.is_favorite ? 'active' : ''}`}
                   onClick={() => toggleFavorite(game)}
                 >
                   <Heart size={16} />
                 </button>
                 
-                {!game.isDownloaded && (
+                {!game.is_downloaded && (
                   <button
                     className="action-btn download"
                     onClick={() => downloadGame(game)}

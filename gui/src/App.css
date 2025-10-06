@@ -510,13 +510,18 @@
   font-weight: 500;
 }
 
-.game-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-  color: #fbbf24;
+.game-summary {
   font-size: 0.875rem;
+  color: #718096;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.game-genres {
+  font-size: 0.75rem;
+  color: #667eea;
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
 
 .game-actions {

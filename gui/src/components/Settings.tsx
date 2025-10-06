@@ -3,12 +3,12 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { Settings as SettingsIcon, FolderOpen, Database, Download, RefreshCw, Save } from 'lucide-react'
 
 interface SettingsData {
-  romDirectories: string[]
-  downloadDirectory: string
-  metadataApiKey: string
-  autoScan: boolean
-  scanInterval: number
-  maxConcurrentDownloads: number
+  rom_directories: string[]
+  download_directory: string
+  metadata_api_key: string
+  auto_scan: boolean
+  scan_interval: number
+  max_concurrent_downloads: number
 }
 
 interface SettingsProps {
@@ -17,12 +17,12 @@ interface SettingsProps {
 
 export const Settings: React.FC<SettingsProps> = () => {
   const [settings, setSettings] = useState<SettingsData>({
-    romDirectories: [],
-    downloadDirectory: '',
-    metadataApiKey: '',
-    autoScan: true,
-    scanInterval: 30,
-    maxConcurrentDownloads: 3
+    rom_directories: [],
+    download_directory: '',
+    metadata_api_key: '',
+    auto_scan: true,
+    scan_interval: 30,
+    max_concurrent_downloads: 3
   })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -35,9 +35,8 @@ export const Settings: React.FC<SettingsProps> = () => {
   const loadSettings = async () => {
     try {
       setLoading(true)
-      // This will load settings from your config files
-      // For now, use default values
-      console.log('Loading settings...')
+      const result = await invoke<SettingsData>('get_settings')
+      setSettings(result)
     } catch (error) {
       console.error('Failed to load settings:', error)
     } finally {
@@ -48,11 +47,8 @@ export const Settings: React.FC<SettingsProps> = () => {
   const saveSettings = async () => {
     try {
       setSaving(true)
-      // This will save settings to your config files
-      console.log('Saving settings:', settings)
-      
-      // Simulate save delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const result = await invoke<string>('save_settings', { settings })
+      console.log(result)
     } catch (error) {
       console.error('Failed to save settings:', error)
     } finally {
@@ -63,11 +59,8 @@ export const Settings: React.FC<SettingsProps> = () => {
   const startScanning = async () => {
     try {
       setScanning(true)
-      // This will trigger your Python scanning scripts
-      console.log('Starting ROM directory scan...')
-      
-      // Simulate scan delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const result = await invoke<string>('start_rom_scan')
+      console.log(result)
     } catch (error) {
       console.error('Failed to start scanning:', error)
     } finally {
@@ -78,21 +71,21 @@ export const Settings: React.FC<SettingsProps> = () => {
   const addRomDirectory = () => {
     setSettings(prev => ({
       ...prev,
-      romDirectories: [...prev.romDirectories, '']
+      rom_directories: [...prev.rom_directories, '']
     }))
   }
 
   const updateRomDirectory = (index: number, value: string) => {
     setSettings(prev => ({
       ...prev,
-      romDirectories: prev.romDirectories.map((dir, i) => i === index ? value : dir)
+      rom_directories: prev.rom_directories.map((dir, i) => i === index ? value : dir)
     }))
   }
 
   const removeRomDirectory = (index: number) => {
     setSettings(prev => ({
       ...prev,
-      romDirectories: prev.romDirectories.filter((_, i) => i !== index)
+      rom_directories: prev.rom_directories.filter((_, i) => i !== index)
     }))
   }
 
@@ -119,7 +112,7 @@ export const Settings: React.FC<SettingsProps> = () => {
           <div className="settings-group">
             <label className="setting-label">ROM Directories</label>
             <div className="directory-list">
-              {settings.romDirectories.map((directory, index) => (
+              {settings.rom_directories.map((directory, index) => (
                 <div key={index} className="directory-item">
                   <input
                     type="text"
@@ -147,8 +140,8 @@ export const Settings: React.FC<SettingsProps> = () => {
             <div className="input-group">
               <input
                 type="text"
-                value={settings.downloadDirectory}
-                onChange={(e) => setSettings(prev => ({ ...prev, downloadDirectory: e.target.value }))}
+                value={settings.download_directory}
+                onChange={(e) => setSettings(prev => ({ ...prev, download_directory: e.target.value }))}
                 placeholder="Enter download directory path..."
                 className="setting-input"
               />
@@ -173,8 +166,8 @@ export const Settings: React.FC<SettingsProps> = () => {
             <label className="setting-label">IGDB API Key</label>
             <input
               type="password"
-              value={settings.metadataApiKey}
-              onChange={(e) => setSettings(prev => ({ ...prev, metadataApiKey: e.target.value }))}
+              value={settings.metadata_api_key}
+              onChange={(e) => setSettings(prev => ({ ...prev, metadata_api_key: e.target.value }))}
               placeholder="Enter your IGDB API key..."
               className="setting-input"
             />
@@ -197,8 +190,8 @@ export const Settings: React.FC<SettingsProps> = () => {
             <label className="checkbox-label">
               <input
                 type="checkbox"
-                checked={settings.autoScan}
-                onChange={(e) => setSettings(prev => ({ ...prev, autoScan: e.target.checked }))}
+                checked={settings.auto_scan}
+                onChange={(e) => setSettings(prev => ({ ...prev, auto_scan: e.target.checked }))}
               />
               <span>Enable automatic ROM directory scanning</span>
             </label>
@@ -208,8 +201,8 @@ export const Settings: React.FC<SettingsProps> = () => {
             <label className="setting-label">Scan Interval (minutes)</label>
             <input
               type="number"
-              value={settings.scanInterval}
-              onChange={(e) => setSettings(prev => ({ ...prev, scanInterval: parseInt(e.target.value) || 30 }))}
+              value={settings.scan_interval}
+              onChange={(e) => setSettings(prev => ({ ...prev, scan_interval: parseInt(e.target.value) || 30 }))}
               min="1"
               max="1440"
               className="setting-input"
@@ -220,8 +213,8 @@ export const Settings: React.FC<SettingsProps> = () => {
             <label className="setting-label">Max Concurrent Downloads</label>
             <input
               type="number"
-              value={settings.maxConcurrentDownloads}
-              onChange={(e) => setSettings(prev => ({ ...prev, maxConcurrentDownloads: parseInt(e.target.value) || 3 }))}
+              value={settings.max_concurrent_downloads}
+              onChange={(e) => setSettings(prev => ({ ...prev, max_concurrent_downloads: parseInt(e.target.value) || 3 }))}
               min="1"
               max="10"
               className="setting-input"
