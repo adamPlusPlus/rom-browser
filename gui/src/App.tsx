@@ -1,88 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { invoke } from '@tauri-apps/api/tauri'
-import { GameBrowser } from './components/GameBrowser'
-import { PlatformSidebar } from './components/PlatformSidebar'
-import { Header } from './components/Header'
+import React, { useState } from 'react'
+import { Navigation, Page } from './components/Navigation'
+import { MyLibrary } from './components/MyLibrary'
+import { MyrientBrowser } from './components/MyrientBrowser'
+import { Settings } from './components/Settings'
 import './App.css'
 
-interface Platform {
-  id: string
-  name: string
-  dataset: string
-}
-
-interface Game {
-  name: string
-  platform: string
-  size?: string
-  url?: string
-}
-
 function App() {
-  const [platforms, setPlatforms] = useState<Platform[]>([])
-  const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null)
-  const [games, setGames] = useState<Game[]>([])
-  const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState<Page>('library')
 
-  useEffect(() => {
-    loadPlatforms()
-  }, [])
-
-  const loadPlatforms = async () => {
-    try {
-      setLoading(true)
-      const result = await invoke<Platform[]>('get_platforms')
-      setPlatforms(result)
-    } catch (error) {
-      console.error('Failed to load platforms:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handlePlatformSelect = async (platform: Platform) => {
-    try {
-      setLoading(true)
-      setSelectedPlatform(platform)
-      const result = await invoke<Game[]>('browse_platform', { platformId: platform.id })
-      setGames(result)
-    } catch (error) {
-      console.error('Failed to browse platform:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleGameDownload = async (game: Game) => {
-    if (!game.url) return
-    
-    try {
-      const result = await invoke<string>('download_game', { 
-        gameName: game.name, 
-        url: game.url 
-      })
-      console.log(result)
-    } catch (error) {
-      console.error('Failed to download game:', error)
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'library':
+        return <MyLibrary />
+      case 'browser':
+        return <MyrientBrowser />
+      case 'settings':
+        return <Settings />
+      default:
+        return <MyLibrary />
     }
   }
 
   return (
     <div className="app">
-      <Header />
+      <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
       <div className="app-content">
-        <PlatformSidebar 
-          platforms={platforms}
-          onPlatformSelect={handlePlatformSelect}
-          selectedPlatform={selectedPlatform}
-          loading={loading}
-        />
-        <GameBrowser 
-          games={games}
-          selectedPlatform={selectedPlatform}
-          onGameDownload={handleGameDownload}
-          loading={loading}
-        />
+        {renderPage()}
       </div>
     </div>
   )
