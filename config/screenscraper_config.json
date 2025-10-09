@@ -1,0 +1,13 @@
+{
+    "username": "sibgagurk",
+    "password": "lwrkgijij239gwROI",
+    "instructions": {
+        "screenscraper_setup": [
+            "1. Go to https://www.screenscraper.fr/",
+            "2. Register for a free account",
+            "3. Use your username and password in this config file",
+            "4. Screenscraper.fr is free and unlimited for registered users",
+            "5. No API key needed - just username/password authentication"
+        ]
+    }
+}

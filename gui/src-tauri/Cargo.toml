@@ -1,0 +1,56 @@
+[package]
+name = "rom-browser-gui"
+version = "0.1.0"
+description = "Modern ROM Browser with 3D capabilities"
+authors = ["ROM Browser Team"]
+license = "MIT"
+repository = "https://github.com/adamPlusPlus/rom-browser"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = ["fs-all", "os-all", "path-all", "process-all", "shell-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+
+# ROM Browser Scripts integration
+rom-browser-scripts = { path = "../../scripts-rust" }
+
+# HTTP client for API calls
+reqwest = { version = "0.11", features = ["json", "stream"] }
+
+# Database
+rusqlite = { version = "0.30", features = ["bundled"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+
+# URL handling
+url = "2.4"
+
+# HTML parsing
+scraper = "0.18"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Regex
+regex = "1.10"
+
+# File system operations
+walkdir = "2.3"
+dirs = "5.0"
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]

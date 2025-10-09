@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myrient Browser Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #2e3440;
+            color: #ffffff;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #4c566a;
+        }
+        
+        .title {
+            color: #5e81ac;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            background-color: #4c566a;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn:hover {
+            background-color: #5e81ac;
+        }
+        
+        .btn.active {
+            background-color: #5e81ac;
+        }
+        
+        .search-box {
+            padding: 10px;
+            background-color: #3b4252;
+            color: #ffffff;
+            border: 1px solid #4c566a;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 300px;
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .platform-card {
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .platform-card:hover {
+            background-color: #4c566a;
+            border-color: #5e81ac;
+        }
+        
+        .platform-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        
+        .platform-dataset {
+            font-size: 14px;
+            color: #88c0d0;
+            text-transform: capitalize;
+        }
+        
+        .file-list {
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .file-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #4c566a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .file-item:hover {
+            background-color: #4c566a;
+        }
+        
+        .file-item:nth-child(even) {
+            background-color: #434c5e;
+        }
+        
+        .file-item:nth-child(even):hover {
+            background-color: #4c566a;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .file-icon {
+            font-size: 18px;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: #88c0d0;
+        }
+        
+        .download-btn {
+            background-color: #a3be8c;
+            color: #2e3440;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .pagination {
+            margin: 15px 0;
+            padding: 10px 15px;
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .pagination-info {
+            color: #88c0d0;
+            font-size: 14px;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .pagination-btn {
+            background-color: #5e81ac;
+            color: #ffffff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .pagination-btn:disabled {
+            background-color: #4c566a;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            padding: 40px;
+            text-align: center;
+            color: #88c0d0;
+            font-size: 18px;
+        }
+        
+        .error {
+            background-color: #bf616a;
+            color: #ffffff;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #bf616a;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .breadcrumb-item {
+            background-color: transparent;
+            color: #5e81ac;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .breadcrumb-item.current {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .breadcrumb-separator {
+            color: #4c566a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Myrient Browser & Downloader</h1>
+            <div class="controls">
+                <button class="btn" onclick="toggleViewMode()">
+                    <span id="viewModeIcon">📋</span> <span id="viewModeText">List</span>
+                </button>
+                <button class="btn" onclick="refreshPlatforms()">Refresh</button>
+            </div>
+        </div>
+
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+
+        <div id="platformSelection">
+            <div style="margin-bottom: 20px;">
+                <input type="text" class="search-box" placeholder="Search platforms..." id="platformSearch" onkeyup="filterPlatforms()">
+            </div>
+            <h2 style="color: #e5e9f0; margin-bottom: 20px;">Select a Platform</h2>
+            <div class="platform-grid" id="platformGrid">
+                <!-- Platforms will be loaded here -->
+            </div>
+        </div>
+
+        <div id="browserView" style="display: none;">
+            <div class="breadcrumb" id="breadcrumbContainer">
+                <!-- Breadcrumbs will be loaded here -->
+            </div>
+
+            <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+                <input type="text" class="search-box" placeholder="Search files and folders..." id="fileSearch">
+                <div style="display: flex; gap: 5px;">
+                    <button class="btn active" onclick="setViewMode('list')" id="listBtn">
+                        📋 List
+                    </button>
+                    <button class="btn" onclick="setViewMode('tree')" id="treeBtn">
+                        🌳 Tree
+                    </button>
+                </div>
+            </div>
+
+            <div id="paginationContainer"></div>
+
+            <div class="file-list" id="fileList">
+                <!-- Files will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data for demonstration
+        const mockPlatforms = [
+            { id: 'redump', name: 'Redump', dataset: 'redump' },
+            { id: 'no-intro', name: 'No-Intro', dataset: 'no-intro' }
+        ];
+
+        const mockFiles = [
+            { name: 'Nintendo - Nintendo Entertainment System', isDirectory: true, size: null },
+            { name: 'Nintendo - Super Nintendo Entertainment System', isDirectory: true, size: null },
+            { name: 'Sony - PlayStation', isDirectory: true, size: null },
+            { name: 'Sony - PlayStation 2', isDirectory: true, size: null },
+            { name: 'Microsoft - Xbox', isDirectory: true, size: null },
+            { name: 'Sega - Mega Drive - Genesis', isDirectory: true, size: null },
+            { name: 'Atari - 2600', isDirectory: true, size: null },
+            { name: 'NEC - PC Engine - TurboGrafx-16', isDirectory: true, size: null },
+            { name: 'SNK - Neo Geo', isDirectory: true, size: null },
+            { name: 'Bandai - WonderSwan', isDirectory: true, size: null }
+        ];
+
+        const mockRomFiles = [
+            { name: 'Super Mario Bros. (USA).zip', isDirectory: false, size: '32.1 MB', url: '#' },
+            { name: 'The Legend of Zelda (USA).zip', isDirectory: false, size: '128.5 KB', url: '#' },
+            { name: 'Metroid (USA).zip', isDirectory: false, size: '64.2 KB', url: '#' },
+            { name: 'Castlevania (USA).zip', isDirectory: false, size: '128.0 KB', url: '#' },
+            { name: 'Mega Man (USA).zip', isDirectory: false, size: '64.0 KB', url: '#' },
+            { name: 'Contra (USA).zip', isDirectory: false, size: '128.0 KB', url: '#' },
+            { name: 'Double Dragon (USA).zip', isDirectory: false, size: '128.0 KB', url: '#' },
+            { name: 'Ninja Gaiden (USA).zip', isDirectory: false, size: '128.0 KB', url: '#' },
+            { name: 'Teenage Mutant Ninja Turtles (USA).zip', isDirectory: false, size: '256.0 KB', url: '#' },
+            { name: 'Final Fantasy (USA).zip', isDirectory: false, size: '512.0 KB', url: '#' }
+        ];
+
+        let currentPlatform = null;
+        let currentFiles = [];
+        let currentPage = 1;
+        const pageSize = 5; // Small page size for demo
+        let viewMode = 'list';
+
+        function showLoading(message = 'Loading...') {
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="loading">${message}</div>
+            `;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').innerHTML = '';
+        }
+
+        function showError(message) {
+            document.getElementById('errorContainer').innerHTML = `
+                <div class="error">
+                    <strong>Error:</strong> ${message}
+                </div>
+            `;
+        }
+
+        function hideError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+
+        function loadPlatforms() {
+            hideError();
+            showLoading('Loading platforms...');
+            
+            setTimeout(() => {
+                hideLoading();
+                renderPlatforms(mockPlatforms);
+            }, 1000);
+        }
+
+        function renderPlatforms(platforms) {
+            const grid = document.getElementById('platformGrid');
+            grid.innerHTML = platforms.map(platform => `
+                <div class="platform-card" onclick="selectPlatform('${platform.id}', '${platform.name}')">
+                    <div class="platform-name">${platform.name}</div>
+                    <div class="platform-dataset">${platform.dataset}</div>
+                </div>
+            `).join('');
+        }
+
+        function filterPlatforms() {
+            const searchTerm = document.getElementById('platformSearch').value.toLowerCase();
+            const filtered = mockPlatforms.filter(platform => 
+                platform.name.toLowerCase().includes(searchTerm) ||
+                platform.dataset.toLowerCase().includes(searchTerm)
+            );
+            renderPlatforms(filtered);
+        }
+
+        function selectPlatform(platformId, platformName) {
+            currentPlatform = { id: platformId, name: platformName };
+            currentFiles = mockFiles;
+            currentPage = 1;
+            
+            document.getElementById('platformSelection').style.display = 'none';
+            document.getElementById('browserView').style.display = 'block';
+            
+            updateBreadcrumbs([{ name: platformName, path: '' }]);
+            renderFiles();
+        }
+
+        function updateBreadcrumbs(breadcrumbs) {
+            const container = document.getElementById('breadcrumbContainer');
+            container.innerHTML = breadcrumbs.map((crumb, index) => `
+                <button class="breadcrumb-item ${index === breadcrumbs.length - 1 ? 'current' : ''}" 
+                        onclick="navigateToBreadcrumb(${index})">
+                    ${crumb.name}
+                </button>
+                ${index < breadcrumbs.length - 1 ? '<span class="breadcrumb-separator">/</span>' : ''}
+            `).join('');
+        }
+
+        function navigateToBreadcrumb(index) {
+            if (index === 0) {
+                // Go back to platform root
+                currentFiles = mockFiles;
+                currentPage = 1;
+                updateBreadcrumbs([{ name: currentPlatform.name, path: '' }]);
+                renderFiles();
+            }
+        }
+
+        function renderFiles() {
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageFiles = currentFiles.slice(startIndex, endIndex);
+            
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = pageFiles.map((file, index) => `
+                <div class="file-item" onclick="${file.isDirectory ? `navigateToDirectory('${file.name}')` : ''}">
+                    <div class="file-info">
+                        <span class="file-icon">${file.isDirectory ? '📁' : '📄'}</span>
+                        <div class="file-details">
+                            <div class="file-name">${file.name}</div>
+                            ${file.size ? `<div class="file-size">${file.size}</div>` : ''}
+                        </div>
+                    </div>
+                    ${!file.isDirectory && file.url ? `
+                        <button class="download-btn" onclick="downloadFile('${file.name}', event)">
+                            Download
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            updatePagination();
+        }
+
+        function navigateToDirectory(dirName) {
+            // Simulate navigating to a directory with ROM files
+            currentFiles = mockRomFiles;
+            currentPage = 1;
+            updateBreadcrumbs([
+                { name: currentPlatform.name, path: '' },
+                { name: dirName, path: dirName }
+            ]);
+            renderFiles();
+        }
+
+        function downloadFile(fileName, event) {
+            event.stopPropagation();
+            alert(`Downloading: ${fileName}\n\nIn the real application, this would:\n- Add to download queue\n- Show progress\n- Handle the actual download`);
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(currentFiles.length / pageSize);
+            const startItem = (currentPage - 1) * pageSize + 1;
+            const endItem = Math.min(currentPage * pageSize, currentFiles.length);
+            
+            const container = document.getElementById('paginationContainer');
+            
+            if (totalPages > 1) {
+                container.innerHTML = `
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing ${startItem}-${endItem} of ${currentFiles.length} items (Page ${currentPage} of ${totalPages})
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" onclick="changePage(${currentPage - 1})" 
+                                    ${currentPage <= 1 ? 'disabled' : ''}>
+                                ← Previous
+                            </button>
+                            <span style="color: #e5e9f0; font-size: 12px; padding: 0 10px;">
+                                ${currentPage} / ${totalPages}
+                            </span>
+                            <button class="pagination-btn" onclick="changePage(${currentPage + 1})" 
+                                    ${currentPage >= totalPages ? 'disabled' : ''}>
+                                Next →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        function changePage(newPage) {
+            const totalPages = Math.ceil(currentFiles.length / pageSize);
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderFiles();
+            }
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('listBtn').classList.toggle('active', mode === 'list');
+            document.getElementById('treeBtn').classList.toggle('active', mode === 'tree');
+            
+            if (mode === 'tree') {
+                alert('Tree view is implemented in the React component. This demo shows the list view functionality.');
+            }
+        }
+
+        function toggleViewMode() {
+            setViewMode(viewMode === 'list' ? 'tree' : 'list');
+        }
+
+        function refreshPlatforms() {
+            loadPlatforms();
+        }
+
+        // Initialize the application
+        loadPlatforms();
+    </script>
+</body>
+</html>

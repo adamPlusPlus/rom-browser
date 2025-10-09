@@ -1,0 +1,75 @@
+[package]
+name = "rom-browser-scripts"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# HTTP client and async runtime
+reqwest = { version = "0.11", features = ["json", "stream"] }
+tokio = { version = "1.0", features = ["full"] }
+
+# Database
+rusqlite = { version = "0.30", features = ["bundled", "chrono"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# File system and path handling
+walkdir = "2.3"
+dirs = "5.0"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# CLI argument parsing
+clap = { version = "4.0", features = ["derive"] }
+
+# URL handling
+url = "2.4"
+
+# HTML parsing
+scraper = "0.18"
+
+# Image processing for placeholder covers
+image = "0.24"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Regex
+regex = "1.10"
+
+# Progress bars
+indicatif = "0.17"
+
+# Clipboard support
+arboard = "3.2"
+
+# File downloads with progress
+futures = "0.3"
+
+[[bin]]
+name = "rom-browser"
+path = "src/bin/rom_browser.rs"
+
+[[bin]]
+name = "rom-downloader"
+path = "src/bin/rom_downloader.rs"
+
+[[bin]]
+name = "metadata-downloader"
+path = "src/bin/metadata_downloader.rs"
+
+[[bin]]
+name = "smart-metadata-downloader"
+path = "src/bin/smart_metadata_downloader.rs"
+
+[[bin]]
+name = "config-manager"
+path = "src/bin/config_manager.rs"

@@ -1,0 +1,12 @@
+{
+    "api_key": "958a81254d874dcf81362b3bfb904074",
+    "base_url": "https://api.gamebrain.co/v1",
+    "instructions": {
+        "gamebrain_setup": [
+            "1. GameBrain API key is already configured",
+            "2. API endpoint: https://api.gamebrain.com/v1",
+            "3. Search endpoint: /games/search",
+            "4. Authentication: Bearer token"
+        ]
+    }
+}
